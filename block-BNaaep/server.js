@@ -22,20 +22,30 @@ function handleRequest(req, res) {
   });
 
   req.on(`end`, () => {
-    if (req.url === `/contacts` && req.method === `GET`) {
+    if (req.url === `/` && req.method === `GET`) {
+      res.setHeader(`content-type`, `text/html`);
+      fs.createReadStream(`./index.html`).pipe(res);
+    } else if (path === `/assets/index.css` && req.method === `GET`) {
+      res.setHeader(`content-type`, `text/css`);
+
+      fs.createReadStream(`./assets/index.css`).pipe(res);
+    } else if (path === `/assets/index.png` && req.method === `GET`) {
+      res.setHeader(`content-type`, `image/png`);
+      fs.createReadStream(`./assets/index.png`).pipe(res);
+    } else if (req.url === `/contacts` && req.method === `GET`) {
       res.setHeader(`content-type`, `text/html`);
       fs.createReadStream(`./about.html`).pipe(res);
-    } else if (path.split(`.`).pop() === `css` && req.method === `GET`) {
+    } else if (path === `/assets/about.css` && req.method === `GET`) {
       res.setHeader(`content-type`, `text/css`);
+
       fs.createReadStream(`./assets/about.css`).pipe(res);
-    } else if (path.split(`.`).pop() === `png` && req.method === `GET`) {
+    } else if (path === `/assets/about.png` && req.method === `GET`) {
       res.setHeader(`content-type`, `image/png`);
       fs.createReadStream(`./assets/about.png`).pipe(res);
     } else if (req.url === `/form` && req.method === `POST`) {
       let parseData = qs.parse(store);
       let username = parseData.username;
       let strData = JSON.stringify(parseData);
-      //   console.log(parseData);
 
       fs.open(contactsPath + username + `.json`, `wx`, (err, fd) => {
         if (err) return console.log(err);
